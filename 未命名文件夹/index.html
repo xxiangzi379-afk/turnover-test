@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你还撑得住吗？测测你的离职倾向</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #F5E6F0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  padding: 24px 16px;
+}
+.wrap {
+  width: 100%;
+  max-width: 620px;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 30px rgba(180,100,160,0.12);
+}
+.screen { display: none; }
+.screen.active { display: block; }
+
+.intro-top {
+  background: linear-gradient(160deg, #C96BA8 0%, #9B59B6 100%);
+  padding: 44px 32px 36px;
+  text-align: center;
+}
+.intro-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  font-size: 11px;
+  color: #fff;
+  letter-spacing: 0.08em;
+  padding: 4px 14px;
+  margin-bottom: 18px;
+}
+.intro-title { font-size: 28px; font-weight: 600; color: #fff; line-height: 1.4; margin-bottom: 10px; }
+.intro-sub { font-size: 13px; color: rgba(255,255,255,0.82); line-height: 1.8; }
+.intro-body { padding: 28px 28px 32px; }
+.intro-card { background: #FDF3FA; border-radius: 14px; padding: 18px 20px; margin-bottom: 18px; }
+.intro-card p { font-size: 13px; color: #7A5068; line-height: 1.9; }
+.dim-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; justify-content: center; }
+.pill { background: #F5E6F0; border-radius: 20px; font-size: 12px; color: #C96BA8; padding: 5px 14px; }
+.start-btn {
+  display: block; width: 100%;
+  background: linear-gradient(135deg, #C96BA8, #9B59B6);
+  border: none; border-radius: 30px; color: #fff;
+  font-size: 16px; font-weight: 500; padding: 15px 0;
+  cursor: pointer; letter-spacing: 0.05em; transition: opacity 0.2s;
+}
+.start-btn:hover { opacity: 0.9; }
+.intro-note { font-size: 11px; color: #C0A0B8; text-align: center; margin-top: 14px; line-height: 1.8; }
+
+.quiz-top {
+  background: linear-gradient(160deg, #C96BA8 0%, #9B59B6 100%);
+  padding: 24px 28px 20px;
+}
+.quiz-prog-label { font-size: 12px; color: rgba(255,255,255,0.75); margin-bottom: 8px; }
+.prog-bar { background: rgba(255,255,255,0.25); border-radius: 4px; height: 5px; }
+.prog-fill { background: #fff; border-radius: 4px; height: 5px; transition: width 0.35s; }
+.quiz-body { padding: 28px 28px 24px; }
+.q-num { font-size: 11px; color: #C96BA8; margin-bottom: 8px; font-weight: 500; }
+.q-text { font-size: 18px; font-weight: 500; color: #3D1A30; line-height: 1.6; margin-bottom: 20px; }
+.option {
+  background: #FDF3FA; border: 1.5px solid #F0D8EA;
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 10px;
+  color: #5A3050; font-size: 14px; cursor: pointer; transition: all 0.18s;
+}
+.option:hover { background: #F5E0F0; border-color: #C96BA8; }
+.option.selected { background: #F0D0E8; border-color: #C96BA8; color: #7A2060; font-weight: 500; }
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
+.prev-btn {
+  background: #F5E6F0; border: none; border-radius: 20px;
+  color: #C96BA8; font-size: 13px; padding: 9px 22px; cursor: pointer; transition: background 0.2s;
+}
+.prev-btn:hover { background: #EDD0E5; }
+.prev-btn:disabled { opacity: 0.35; cursor: default; }
+.next-btn2 {
+  background: linear-gradient(135deg, #C96BA8, #9B59B6);
+  border: none; border-radius: 20px; color: #fff;
+  font-size: 13px; font-weight: 500; padding: 9px 26px; cursor: pointer; transition: opacity 0.2s;
+}
+.next-btn2:hover { opacity: 0.88; }
+
+.result-top {
+  background: linear-gradient(160deg, #C96BA8 0%, #9B59B6 100%);
+  padding: 36px 32px 30px; text-align: center;
+}
+.result-tag { font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 0.08em; margin-bottom: 10px; }
+.result-pct { font-size: 72px; font-weight: 700; color: #fff; line-height: 1; margin-bottom: 6px; }
+.result-label { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 12px; }
+.res-bar-wrap { background: rgba(255,255,255,0.2); border-radius: 6px; height: 8px; max-width: 300px; margin: 0 auto; }
+.res-bar-fill { height: 8px; border-radius: 6px; transition: width 1.2s ease; }
+.result-body { padding: 24px 28px 32px; }
+.dim-title { font-size: 12px; color: #B080A0; font-weight: 500; margin-bottom: 12px; text-align: center; }
+.dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.dim-card { background: #FDF3FA; border-radius: 12px; padding: 12px 16px; }
+.dim-name { font-size: 11px; color: #B080A0; margin-bottom: 4px; }
+.dim-pct { font-size: 20px; font-weight: 600; }
+.advice-card {
+  background: #FDF3FA; padding: 16px 18px; margin-bottom: 20px;
+  border-left: 3px solid #C96BA8; border-radius: 0 14px 14px 0;
+}
+.advice-label { font-size: 12px; color: #C96BA8; font-weight: 500; margin-bottom: 6px; }
+.advice-text { font-size: 13px; color: #5A3050; line-height: 1.9; }
+.restart-btn {
+  display: block; width: 100%; background: #F5E6F0; border: none;
+  border-radius: 30px; color: #C96BA8; font-size: 14px; font-weight: 500;
+  padding: 13px 0; cursor: pointer; transition: background 0.2s;
+}
+.restart-btn:hover { background: #EDD0E5; }
+
+@media (max-width: 480px) {
+  .intro-top { padding: 36px 20px 28px; }
+  .intro-body, .quiz-body, .result-body { padding-left: 20px; padding-right: 20px; }
+  .intro-title { font-size: 24px; }
+  .result-pct { font-size: 58px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="screen active" id="s-intro">
+    <div class="intro-top">
+      <div class="intro-tag">职场心理测评</div>
+      <p class="intro-title">你还撑得住吗？<br>测测你的离职倾向</p>
+      <p class="intro-sub">20道题 · 3分钟 · 看清自己真实的工作状态</p>
+    </div>
+    <div class="intro-body">
+      <div class="intro-card">
+        <p>本测评从五个维度评估你目前的职场状态，帮助你更清楚地了解自己，做出更适合自己的职业决策。</p>
+      </div>
+      <div class="dim-pills">
+        <span class="pill">情绪状态</span>
+        <span class="pill">工作环境</span>
+        <span class="pill">个人发展</span>
+        <span class="pill">组织管理</span>
+        <span class="pill">综合评估</span>
+      </div>
+      <button class="start-btn" onclick="startTest()">开始测试</button>
+      <p class="intro-note">匿名测评 · 结果仅供参考 · 不存储任何数据</p>
+    </div>
+  </div>
+
+  <div class="screen" id="s-quiz">
+    <div class="quiz-top">
+      <p class="quiz-prog-label" id="prog-label">第 1 题 / 共 20 题</p>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:5%;"></div></div>
+    </div>
+    <div class="quiz-body">
+      <p class="q-num" id="q-num">Q1 · 情绪状态</p>
+      <p class="q-text" id="q-text"></p>
+      <div id="options-wrap"></div>
+      <div class="nav-row">
+        <button class="prev-btn" id="btn-prev" onclick="prevQ()" disabled>上一题</button>
+        <button class="next-btn2" id="btn-next" onclick="nextQ()">下一题</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="s-result">
+    <div class="result-top">
+      <p class="result-tag">你的离职倾向指数</p>
+      <p class="result-pct" id="res-pct"></p>
+      <p class="result-label" id="res-label"></p>
+      <div class="res-bar-wrap"><div class="res-bar-fill" id="res-bar"></div></div>
+    </div>
+    <div class="result-body">
+      <p class="dim-title">五大维度得分</p>
+      <div class="dim-grid" id="dim-grid"></div>
+      <div class="advice-card">
+        <p class="advice-label">测评建议</p>
+        <p class="advice-text" id="res-advice"></p>
+      </div>
+      <button class="restart-btn" onclick="restartTest()">再测一次</button>
+    </div>
+  </div>
+
+</div>
+<script>
+const questions = [
+  { dim:'情绪状态', text:'你目前整体的情绪状态是？', opts:['高兴愉悦','平静平和','时常焦虑','情绪低落','身体也开始出问题了'], scores:[0,1,3,4,5] },
+  { dim:'工作环境', text:'你对目前工作环境的整体满意度？', opts:['非常满意','还算满意','一般般','不太满意','很不满意'], scores:[0,1,2,4,5] },
+  { dim:'个人发展', text:'现在的工作对你的职业成长有帮助吗？', opts:['很有帮助','有一些帮助','说不准','帮助不大','几乎没有帮助'], scores:[0,1,2,4,5] },
+  { dim:'组织管理', text:'你对公司管理层的信任程度？', opts:['非常信任','比较信任','一般','不太信任','完全不信任'], scores:[0,1,2,4,5] },
+  { dim:'综合评估', text:'你最近有没有在刷招聘软件或关注其他工作机会？', opts:['没有，完全不想','偶尔随便看看','经常在刷','已经在投简历了','已经在积极面试了'], scores:[0,1,3,4,5] },
+  { dim:'情绪状态', text:'工作带给你的压力频率是？', opts:['很少有压力','偶尔有','经常感到压力','几乎每天都有','已经影响到生活了'], scores:[0,1,3,4,5] },
+  { dim:'工作环境', text:'你和直属领导的关系怎么样？', opts:['非常融洽','还不错','一般','有些矛盾','关系很差'], scores:[0,1,2,4,5] },
+  { dim:'综合评估', text:'如果有同等薪资的其他工作，你会考虑换吗？', opts:['不会，我挺满意的','不太会','会认真考虑','很可能会换','立刻就换'], scores:[0,1,3,4,5] },
+  { dim:'个人发展', text:'你觉得在公司的晋升空间有多大？', opts:['空间很大','还有机会','一般','基本没什么空间','完全看不到希望'], scores:[0,1,2,4,5] },
+  { dim:'组织管理', text:'你对公司薪资和福利的满意度？', opts:['非常满意','还可以','一般','不太满意','很不满意'], scores:[0,1,2,4,5] },
+  { dim:'情绪状态', text:'你对"上班"这件事的内心感受是？', opts:['很期待','还好','有点抗拒','非常抗拒','每天都在硬撑'], scores:[0,1,3,4,5] },
+  { dim:'工作环境', text:'你和同事之间的关系怎么样？', opts:['氛围很好','还不错','一般','关系比较差','几乎被孤立'], scores:[0,1,2,4,5] },
+  { dim:'综合评估', text:'你预计自己还会在这家公司待多久？', opts:['长期发展','3年以上','1到3年','不到1年','随时可以走'], scores:[0,1,2,4,5] },
+  { dim:'个人发展', text:'公司有给你提供足够的学习和成长机会吗？', opts:['非常充足','还不错','一般','比较少','几乎没有'], scores:[0,1,2,4,5] },
+  { dim:'组织管理', text:'公司的管理制度和规则让你感觉如何？', opts:['合理顺畅','基本合理','有些问题','比较混乱','很不合理'], scores:[0,1,2,4,5] },
+  { dim:'情绪状态', text:'下班后你还会持续想工作上的事吗？', opts:['很少','偶尔会','经常想','几乎总是','已经影响睡眠了'], scores:[0,1,3,4,5] },
+  { dim:'工作环境', text:'你的工作量和强度让你感觉怎样？', opts:['非常合理','还好','有点超负荷','比较重','严重超负荷'], scores:[0,1,2,4,5] },
+  { dim:'综合评估', text:'你有没有跟身边人提过想换工作？', opts:['没有，从未提过','偶尔说说','经常提起','已经在认真讨论了','周围人都知道我要离职'], scores:[0,1,3,4,5] },
+  { dim:'个人发展', text:'目前的工作符合你的长期职业规划吗？', opts:['完全符合','基本符合','不确定','不太符合','完全不符合'], scores:[0,1,2,4,5] },
+  { dim:'组织管理', text:'公司对你的贡献有给予足够的认可吗？', opts:['非常认可','还好','一般','认可不足','完全被忽视'], scores:[0,1,2,4,5] },
+];
+
+let current=0, answers=new Array(20).fill(null);
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function startTest(){show('s-quiz');renderQ(0);}
+
+function renderQ(idx){
+  current=idx;
+  const q=questions[idx];
+  document.getElementById('prog-label').textContent=`第 ${idx+1} 题 / 共 20 题`;
+  document.getElementById('prog-fill').style.width=`${Math.round((idx+1)/20*100)}%`;
+  document.getElementById('q-num').textContent=`Q${idx+1} · ${q.dim}`;
+  document.getElementById('q-text').textContent=q.text;
+  const wrap=document.getElementById('options-wrap');
+  wrap.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='option'+(answers[idx]===i?' selected':'');
+    div.textContent=opt;
+    div.onclick=()=>{answers[idx]=i;wrap.querySelectorAll('.option').forEach((el,j)=>el.classList.toggle('selected',j===i));};
+    wrap.appendChild(div);
+  });
+  document.getElementById('btn-prev').disabled=idx===0;
+  document.getElementById('btn-next').textContent=idx===19?'查看结果':'下一题';
+}
+
+function prevQ(){if(current>0)renderQ(current-1);}
+function nextQ(){
+  if(answers[current]===null){alert('选一个选项再继续哦～');return;}
+  if(current===19){showResult();return;}
+  renderQ(current+1);
+}
+
+function showResult(){
+  show('s-result');
+  const dims={};
+  questions.forEach((q,i)=>{
+    if(!dims[q.dim])dims[q.dim]={total:0,max:0};
+    dims[q.dim].total+=q.scores[answers[i]];
+    dims[q.dim].max+=5;
+  });
+  let total=0,max=0;
+  Object.values(dims).forEach(d=>{total+=d.total;max+=d.max;});
+  const pct=Math.round(total/max*100);
+  document.getElementById('res-pct').textContent=pct+'%';
+
+  let label,color,advice;
+  if(pct<25){label='状态稳定';color='#A8D8A8';advice='你目前的职场状态很不错，对工作环境、成长空间和团队氛围都比较满意。继续保持，同时留意自己的长期发展方向就好。';}
+  else if(pct<45){label='轻度倾向';color='#F7C59F';advice='你有一些小小的不满，但整体还在可接受范围内。可以试着和领导沟通自己的诉求，或者在工作中找到新的成就感，不要让情绪积累。';}
+  else if(pct<65){label='中度倾向';color='#F4A261';advice='你已经有比较明显的离职倾向了。建议认真想清楚自己真正需要的是什么，如果核心问题无法改变，可以开始低调了解外部机会。';}
+  else if(pct<80){label='高度倾向';color='#E76F51';advice='你的工作满意度偏低，离职倾向较强。建议尽快梳理职业方向，更新简历，同时注意情绪管理，不要在状态最差的时候冲动决策。';}
+  else{label='极高倾向';color='#C1121F';advice='你目前的职场状态已经非常不理想了。建议尽快行动：明确方向、更新简历、开始投递。同时也照顾好自己的情绪和身体，不要耗尽自己。';}
+
+  document.getElementById('res-label').textContent=label;
+  setTimeout(()=>{document.getElementById('res-bar').style.width=pct+'%';document.getElementById('res-bar').style.background=color;},100);
+  document.getElementById('res-advice').textContent=advice;
+
+  const grid=document.getElementById('dim-grid');
+  grid.innerHTML='';
+  Object.entries(dims).forEach(([name,d])=>{
+    const p=Math.round(d.total/d.max*100);
+    const c=p<35?'#7BC67E':p<60?'#F4A261':'#E76F51';
+    const card=document.createElement('div');
+    card.className='dim-card';
+    card.innerHTML=`<div class="dim-name">${name}</div><div class="dim-pct" style="color:${c}">${p}%</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function restartTest(){answers=new Array(20).fill(null);current=0;show('s-intro');}
+</script>
+</body>
+</html>
